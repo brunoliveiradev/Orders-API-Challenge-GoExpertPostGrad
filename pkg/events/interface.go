@@ -13,7 +13,7 @@ type EventInterface interface {
 }
 
 type EventHandlerInterface interface {
-	Handle(event EventInterface, wg *sync.WaitGroup)
+	Handle(event EventInterface, wg *sync.WaitGroup) error
 }
 
 type EventDispatcherInterface interface {
