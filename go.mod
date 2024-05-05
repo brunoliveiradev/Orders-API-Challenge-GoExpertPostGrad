@@ -3,8 +3,10 @@ module GoExpertPostGrad-Orders-Challenge
 go 1.22
 
 require (
+	github.com/go-chi/chi v1.5.5
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/lib/pq v1.10.9
+	github.com/streadway/amqp v1.1.0
 	google.golang.org/grpc v1.63.2
 	google.golang.org/protobuf v1.33.0
 )
