@@ -16,33 +16,28 @@ func NewOrderCreatedHandler(rabbitMQChannel *amqp.Channel) *OrderCreatedHandler 
 	return &OrderCreatedHandler{RabbitMQChannel: rabbitMQChannel}
 }
 
-func (h *OrderCreatedHandler) HandleOrderCreatedEvent(event events.EventInterface, wg *sync.WaitGroup) error {
+func (h *OrderCreatedHandler) Handle(event events.EventInterface, wg *sync.WaitGroup) error {
 	defer wg.Done()
-	log.Println("Order created:", event.GetPayload())
+	log.Println("Event created:", event.GetPayload())
 
-	jsonOutput, err := json.Marshal(event.GetPayload())
-	if err != nil {
-		log.Println("Error marshalling OrderCreated event payload")
-		return err
-	}
+	jsonOutput, _ := json.Marshal(event.GetPayload())
 
 	msg := amqp.Publishing{
 		ContentType: "application/json",
 		Body:        jsonOutput,
 	}
 
-	// Publish the event to the RabbitMQ
-	err = h.RabbitMQChannel.Publish(
+	err := h.RabbitMQChannel.Publish(
 		"amq.direct", // exchange
 		"",           // routing key
 		false,        // mandatory
 		false,        // immediate
-		msg,
+		msg,          // message to publish
 	)
 	if err != nil {
-		log.Println("Error publishing OrderCreated event")
+		log.Println("Error publishing event")
 		return err
 	}
-	log.Println("OrderCreated event published")
+	log.Println("Event published")
 	return nil
 }
