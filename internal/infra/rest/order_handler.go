@@ -1,4 +1,4 @@
-package web
+package rest
 
 import (
 	"GoExpertPostGrad-Orders-Challenge/internal/entity"

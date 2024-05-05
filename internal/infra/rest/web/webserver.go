@@ -1,4 +1,4 @@
-package rest
+package web
 
 import (
 	"github.com/go-chi/chi"
