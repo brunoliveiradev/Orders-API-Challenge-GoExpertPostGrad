@@ -33,5 +33,5 @@ func (w *Server) Start() {
 		w.Router.Handle(path, handler)
 	}
 
-	http.ListenAndServe(":"+w.WebServerPort, w.Router)
+	http.ListenAndServe(w.WebServerPort, w.Router)
 }

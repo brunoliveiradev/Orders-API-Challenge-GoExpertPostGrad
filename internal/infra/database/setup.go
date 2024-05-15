@@ -13,7 +13,7 @@ import (
 )
 
 func SetupDatabase(config *configs.Envs) (*sql.DB, error) {
-	db, err := sql.Open(config.DBDriver, fmt.Sprintf("%s:%s@tcp(%s:%s)/", config.DBUser, config.DBPassword, config.DBHost, config.DBPort))
+	db, err := sql.Open(config.DBDriver, fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", config.DBUser, config.DBPassword, config.DBHost, config.DBPort, config.DBName))
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database: %w", err)
 	}
