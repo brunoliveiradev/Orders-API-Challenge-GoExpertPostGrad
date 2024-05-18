@@ -1,55 +1,77 @@
-version: '3.8'
-
 services:
   app:
-    build: .
-    container_name: orders_service
-    ports:
-      - "8080:8080"  # Port for GraphQL server
-      - "50051:50051"  # Port for gRPC server
-      - "8000:8000"  # Port for Web server
-    depends_on:
-      - mysql       # Depend on MySQL
-      - rabbitmq    # Depend on RabbitMQ
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: orders_api
     environment:
-      DB_DRIVER: mysql
+      DB_DRIVER: ${DB_DRIVER}
       DB_HOST: mysql
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: root
-      DB_NAME: orders
-      DB_MAX_OPEN_CONNS: 10
-      DB_MAX_IDLE_CONNS: 10
-      WEB_SERVER_PORT: ":8000"
-      GRPC_SERVER_PORT: 50051
-      GRAPHQL_SERVER_PORT: 8080
-      RABBITMQ_URL: rabbitmq
+      DB_PORT: "3306"
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_MAX_OPEN_CONNS: ${DB_MAX_OPEN_CONNS}
+      DB_MAX_IDLE_CONNS: ${DB_MAX_IDLE_CONNS}
+      WEB_SERVER_PORT: ${WEB_SERVER_PORT}
+      GRPC_SERVER_PORT: ${GRPC_SERVER_PORT}
+      GRAPHQL_SERVER_PORT: ${GRAPHQL_SERVER_PORT}
       RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_USER: guest
-      RABBITMQ_PASSWORD: guest
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+    ports:
+      - "8000:8000"
+      - "50051:50051"
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    env_file:
+      - ./.env
 
   mysql:
     image: mysql:8.2.0
-    container_name: mysql_orders_service
-    restart: always
+    container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: orders
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
     ports:
-      - "3306:3306"  # Default MySQL port
+      - "3306:3306"
     volumes:
-      - .docker/mysql:/var/lib/mysql  # Volume for data persistence
+      - mysql_data:/var/lib/mysql
+      - ./mysql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    env_file:
+      - ./.env
 
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq_service
-    restart: always
-    ports:
-      - "5672:5672"  # Port for AMQP protocol
-      - "15672:15672"  # Port for management panel
+    container_name: rabbitmq
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    env_file:
+      - ./.env
+
+volumes:
+  mysql_data:
