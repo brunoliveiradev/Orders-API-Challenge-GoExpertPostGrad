@@ -24,7 +24,7 @@ import (
 )
 
 func main() {
-	config, err := configs.LoadConfig(".")
+	config, err := configs.LoadConfig()
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
 	}
@@ -36,7 +36,7 @@ func main() {
 	defer db.Close()
 
 	rabbitMQChannel := getRabbitMQChannel(config)
-	defer rabbitMQChannel.Close()
+	//defer rabbitMQChannel.Close()
 
 	eventDispatcher := setupEventDispatcher(rabbitMQChannel)
 

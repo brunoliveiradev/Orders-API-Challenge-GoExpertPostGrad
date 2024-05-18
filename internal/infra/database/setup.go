@@ -26,15 +26,15 @@ func SetupDatabase(config *configs.Envs) (*sql.DB, error) {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
+	_, err = db.Exec("USE " + config.DBName)
+	if err != nil {
+		return nil, fmt.Errorf("failed to switch database: %w", err)
+	}
+
 	if !tableExists(db, config.DBName) {
 		if err := runMigrations(db, config.DBName); err != nil {
 			return nil, err
 		}
-	}
-
-	_, err = db.Exec("USE " + config.DBName)
-	if err != nil {
-		return nil, fmt.Errorf("failed to switch database: %w", err)
 	}
 
 	return db, nil
