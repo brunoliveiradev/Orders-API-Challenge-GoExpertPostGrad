@@ -1,10 +1,22 @@
-POST http://localhost:8000/order HTTP/1.1
-Host: localhost:8000
+### curl command to test the service in the terminal or postman
+
+# curl --location 'http://localhost:8000/order'
+#--header 'Content-Type: application/json'
+#--data '{
+#  "id":"TV 50",
+#  "price": 4990.90,
+#  "tax": 0.5
+#}
+#'
+POST http://localhost:8000/order
 Content-Type: application/json
 
 {
-  "id":"TV 50",
-  "price": 4999.99,
+  "id": "TV 50",
+  "price": 4990.90,
   "tax": 0.5
 }
+
+
+###
 

@@ -4,9 +4,11 @@
 
 ## Configuração / Setup
 
-1. Você precisará ter o Docker e Docker Compose instalados na sua máquina. Se não tiver, você pode instalar a partir dos links abaixo:
+1. Você precisará das seguintes tecnologias abaixo:
    - [Docker](https://docs.docker.com/get-docker/) 🐳
    - [Docker Compose](https://docs.docker.com/compose/install/) 🐳
+   - [Postman ☄️](https://www.postman.com/downloads/) ou [VS Code](https://code.visualstudio.com/download) com a extensão [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) instalada.
+   - [GIT](https://git-scm.com/downloads)
 
 2. Clone o repositório e entre no diretório do projeto.
    ```sh
@@ -49,8 +51,8 @@
 
 Utilize o arquivo `orders_api.http` para fazer requisições de teste.
 
-1. Abra o arquivo `orders_api.http` no seu editor de texto, se encontra no caminho `api/orders_api.http`.
-2. Envie requisições de teste para a API. Por exemplo, usando o VS Code, você pode instalar a extensão [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), ou utilizar o [Postman](https://www.postman.com/downloads/).
+1. Abra o arquivo `orders_api.http` no seu editor de texto, se encontra no caminho `api/orders_api.http`. 
+2. Envie requisições de teste para a API. Por exemplo, usando o VS Code, você pode instalar a extensão [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), ou utilizar o cURL no [Postman](https://www.postman.com/downloads/).
 3. Para testar o gRPC você pode utilizar o arquivo `orders.proto` que se encontra no diretório `internal/infra/grpc/proto/orders.proto`, veja [como fazer a request pelo Postman](https://learning.postman.com/docs/sending-requests/grpc/grpc-request-interface/).
 4. Para testar o GraphQL você pode utilizar a interface do GraphQL Playground que está disponível em `http://localhost:8080/graphql`.
 5. Utilize a mutation abaixo para criar um pedido:
@@ -71,9 +73,11 @@ Utilize o arquivo `orders_api.http` para fazer requisições de teste.
 
 ## Setup
 
-1. You will need Docker and Docker Compose installed on your machine. If you don't have them, you can install them from the links below:
+1. You will need the following technologies below:
    - [Docker](https://docs.docker.com/get-docker/) 🐳
    - [Docker Compose](https://docs.docker.com/compose/install/) 🐳
+   - [Postman ☄️](https://www.postman.com/downloads/) or [VS Code](https://code.visualstudio.com/download) with the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension installed.
+   - [GIT](https://git-scm.com/downloads)
 
 2. Clone the repository and navigate to the project directory.
    ```sh
@@ -120,7 +124,7 @@ Use the `orders_api.http` file to make test requests.
 2. Send test requests to the API. For example, using VS Code, you can install the [REST Client extension](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), or you can use [Postman](https://www.postman.com/downloads/).
 3. To test gRPC, you can use the `orders.proto` file located in the `internal/infra/grpc/proto/orders.proto` directory, see [how to make the request using Postman](https://learning.postman.com/docs/sending-requests/grpc/grpc-request-interface/).
 4. To test GraphQL, you can use the GraphQL Playground interface available at `http://localhost:8080/graphql`.
-5. Use the mutation below to create an order:
+5. Use the mutation example below to create an order:
    ```graphql
     mutation createOrder {
       createOrder(order: {id: "T-Shirt", Price: 49.99, Tax: 0.5}) {
