@@ -47,11 +47,23 @@
 
 ## Testes
 
-Utilize o arquivo `api.http` para fazer requisições de teste para a API REST e GraphQL.
+Utilize o arquivo `orders_api.http` para fazer requisições de teste.
 
-1. Abra o arquivo `api.http` no seu editor de texto, se encontra no caminho `api/api.http`.
-2. Envie requisições de teste para a API.
-
+1. Abra o arquivo `orders_api.http` no seu editor de texto, se encontra no caminho `api/orders_api.http`.
+2. Envie requisições de teste para a API. Por exemplo, usando o VS Code, você pode instalar a extensão [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), ou utilizar o [Postman](https://www.postman.com/downloads/).
+3. Para testar o gRPC você pode utilizar o arquivo `orders.proto` que se encontra no diretório `internal/infra/grpc/proto/orders.proto`, veja [como fazer a request pelo Postman](https://learning.postman.com/docs/sending-requests/grpc/grpc-request-interface/).
+4. Para testar o GraphQL você pode utilizar a interface do GraphQL Playground que está disponível em `http://localhost:8080/graphql`.
+5. Utilize a mutation abaixo para criar um pedido:
+   ```graphql
+    mutation createOrder {
+      createOrder(order: {id: "T-Shirt", Price: 49.99, Tax: 0.5}) {
+        id
+        Price
+        Tax
+        FinalPrice
+      }
+   }
+   ```
 
 ---
 
@@ -102,7 +114,20 @@ Utilize o arquivo `api.http` para fazer requisições de teste para a API REST e
 
 ## Testing
 
-Use the `api.http` file to make test requests to the REST and GraphQL APIs.
+Use the `orders_api.http` file to make test requests.
 
-1. Open the `api.http` file at `api/api.http` in your text editor.
-2. Send test requests to the API.
+1. Open the `orders_api.http` file in your text editor, located at `api/orders_api.http`.
+2. Send test requests to the API. For example, using VS Code, you can install the [REST Client extension](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), or you can use [Postman](https://www.postman.com/downloads/).
+3. To test gRPC, you can use the `orders.proto` file located in the `internal/infra/grpc/proto/orders.proto` directory, see [how to make the request using Postman](https://learning.postman.com/docs/sending-requests/grpc/grpc-request-interface/).
+4. To test GraphQL, you can use the GraphQL Playground interface available at `http://localhost:8080/graphql`.
+5. Use the mutation below to create an order:
+   ```graphql
+    mutation createOrder {
+      createOrder(order: {id: "T-Shirt", Price: 49.99, Tax: 0.5}) {
+        id
+        Price
+        Tax
+        FinalPrice
+      }
+   }
+   ```
