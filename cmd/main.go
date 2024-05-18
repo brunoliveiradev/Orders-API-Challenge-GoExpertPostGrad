@@ -36,9 +36,11 @@ func main() {
 	defer db.Close()
 
 	rabbitMQChannel := getRabbitMQChannel(config)
-	//defer rabbitMQChannel.Close()
+	defer rabbitMQChannel.Close()
 
-	eventDispatcher := setupEventDispatcher(rabbitMQChannel)
+	orderCreatedHandler := handler.NewOrderCreatedHandler(rabbitMQChannel)
+
+	eventDispatcher := setupEventDispatcher(orderCreatedHandler)
 
 	createOrderUseCase := NewCreateOrderUseCase(db, eventDispatcher)
 
@@ -60,9 +62,9 @@ func getRabbitMQChannel(config *configs.Envs) *amqp.Channel {
 	return ch
 }
 
-func setupEventDispatcher(rabbitMQChannel *amqp.Channel) *events.EventDispatcher {
+func setupEventDispatcher(orderCreatedHandler *handler.OrderCreatedHandler) *events.EventDispatcher {
 	eventDispatcher := events.NewEventDispatcher()
-	eventDispatcher.Register("OrderCreated", &handler.OrderCreatedHandler{RabbitMQChannel: rabbitMQChannel})
+	eventDispatcher.Register("OrderCreated", orderCreatedHandler)
 	return eventDispatcher
 }
 

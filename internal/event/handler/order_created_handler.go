@@ -13,12 +13,35 @@ type OrderCreatedHandler struct {
 }
 
 func NewOrderCreatedHandler(rabbitMQChannel *amqp.Channel) *OrderCreatedHandler {
+	_, err := rabbitMQChannel.QueueDeclare(
+		"orders", // name of the queue
+		true,     // durable
+		false,    // delete when unused
+		false,    // exclusive
+		false,    // no-wait
+		nil,      // arguments
+	)
+	if err != nil {
+		log.Fatalf("Failed to declare queue: %v", err)
+	}
+
+	// Bind the queue to the exchange
+	err = rabbitMQChannel.QueueBind(
+		"orders",     // queue name
+		"order_key",  // routing key
+		"amq.direct", // exchange
+		false,
+		nil,
+	)
+	if err != nil {
+		log.Fatalf("Failed to bind queue: %v", err)
+	}
+
 	return &OrderCreatedHandler{RabbitMQChannel: rabbitMQChannel}
 }
 
 func (h *OrderCreatedHandler) Handle(event events.EventInterface, wg *sync.WaitGroup) error {
 	defer wg.Done()
-	log.Println("Event created:", event.GetPayload())
 
 	jsonOutput, _ := json.Marshal(event.GetPayload())
 
@@ -29,15 +52,15 @@ func (h *OrderCreatedHandler) Handle(event events.EventInterface, wg *sync.WaitG
 
 	err := h.RabbitMQChannel.Publish(
 		"amq.direct", // exchange
-		"",           // routing key
+		"order_key",  // routing key
 		false,        // mandatory
 		false,        // immediate
 		msg,          // message to publish
 	)
 	if err != nil {
-		log.Println("Error publishing event")
+		log.Println("Error publishing event:", err)
 		return err
 	}
-	log.Println("Event published")
+	log.Println("Event published", event.GetName(), ":", string(jsonOutput))
 	return nil
 }
