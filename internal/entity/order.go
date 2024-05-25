@@ -1,19 +1,24 @@
 package entity
 
-import "errors"
+import (
+	"errors"
+	"github.com/google/uuid"
+)
 
 var ErrInvalidEntity = errors.New("invalid entity")
 
 type Order struct {
 	ID         string
+	Name       string
 	Price      float64
 	Tax        float64
 	FinalPrice float64
 }
 
-func NewOrder(id string, price float64, tax float64) (*Order, error) {
+func NewOrder(name string, price float64, tax float64) (*Order, error) {
 	order := &Order{
-		ID:    id,
+		ID:    uuid.New().String(),
+		Name:  name,
 		Price: price,
 		Tax:   tax,
 	}
@@ -25,7 +30,7 @@ func NewOrder(id string, price float64, tax float64) (*Order, error) {
 }
 
 func (o *Order) IsValid() error {
-	if o.ID == "" {
+	if o.Name == "" {
 		return ErrInvalidEntity
 	}
 	if o.Price <= 0 {

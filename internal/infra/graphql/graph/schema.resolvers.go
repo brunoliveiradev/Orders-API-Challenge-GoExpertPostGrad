@@ -13,9 +13,9 @@ import (
 // CreateOrder is the resolver for the createOrder field.
 func (r *mutationResolver) CreateOrder(ctx context.Context, order *model.OrderInput) (*model.Order, error) {
 	dto := usecase.OrderInputDTO{
-		ID:    order.ID,
-		Price: float64(order.Price),
-		Tax:   float64(order.Tax),
+		Name:  order.Name,
+		Price: order.Price,
+		Tax:   order.Tax,
 	}
 
 	output, err := r.CreateOrderUseCase.Execute(dto)
@@ -25,9 +25,10 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, order *model.OrderIn
 
 	return &model.Order{
 		ID:         output.ID,
-		Price:      float64(output.Price),
-		Tax:        float64(output.Tax),
-		FinalPrice: float64(output.FinalPrice),
+		Name:       output.Name,
+		Price:      output.Price,
+		Tax:        output.Tax,
+		FinalPrice: output.FinalPrice,
 	}, nil
 }
 

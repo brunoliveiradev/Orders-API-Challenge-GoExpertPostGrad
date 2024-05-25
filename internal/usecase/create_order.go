@@ -6,13 +6,14 @@ import (
 )
 
 type OrderInputDTO struct {
-	ID    string  `json:"id"`
+	Name  string  `json:"name"`
 	Price float64 `json:"price"`
 	Tax   float64 `json:"tax"`
 }
 
 type OrderOutputDTO struct {
 	ID         string  `json:"id"`
+	Name       string  `json:"name"`
 	Price      float64 `json:"price"`
 	Tax        float64 `json:"tax"`
 	FinalPrice float64 `json:"final_price"`
@@ -34,8 +35,11 @@ func NewCreateOrderUseCase(orderRepository entity.OrderRepositoryInterface, orde
 
 func (uc *CreateOrderUseCase) Execute(input OrderInputDTO) (OrderOutputDTO, error) {
 	// Create order
-	order := toEntityOrder(input)
-	err := order.CalculateFinalPrice()
+	order, err := toEntityOrder(input)
+	if err != nil {
+		return OrderOutputDTO{}, err
+	}
+	err = order.CalculateFinalPrice()
 	if err != nil {
 		return OrderOutputDTO{}, err
 	}
@@ -54,17 +58,19 @@ func (uc *CreateOrderUseCase) Execute(input OrderInputDTO) (OrderOutputDTO, erro
 	return dto, nil
 }
 
-func toEntityOrder(input OrderInputDTO) *entity.Order {
-	return &entity.Order{
-		ID:    input.ID,
-		Price: input.Price,
-		Tax:   input.Tax,
+func toEntityOrder(input OrderInputDTO) (*entity.Order, error) {
+	order, err := entity.NewOrder(input.Name, input.Price, input.Tax)
+	if err != nil {
+		return nil, err
 	}
+
+	return order, nil
 }
 
 func (uc *CreateOrderUseCase) dispatchOrderCreatedEvent(order *entity.Order) (OrderOutputDTO, error) {
 	dto := &OrderOutputDTO{
 		ID:         order.ID,
+		Name:       order.Name,
 		Price:      order.Price,
 		Tax:        order.Tax,
 		FinalPrice: order.FinalPrice,

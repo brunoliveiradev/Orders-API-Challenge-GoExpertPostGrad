@@ -1,14 +1,15 @@
 type Order {
     id: String!
-    Price: Float!
-    Tax: Float!
-    FinalPrice: Float!
+    name: String!
+    price: Float!
+    tax: Float!
+    finalPrice: Float!
 }
 
 input OrderInput {
-    id : String!
-    Price: Float!
-    Tax: Float!
+    name: String!
+    price: Float!
+    tax: Float!
 }
 
 type Mutation {

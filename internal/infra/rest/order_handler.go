@@ -5,6 +5,7 @@ import (
 	"GoExpertPostGrad-Orders-Challenge/internal/usecase"
 	"GoExpertPostGrad-Orders-Challenge/pkg/events"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -34,15 +35,18 @@ func (h *WebOrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 	createOrder := usecase.NewCreateOrderUseCase(h.OrderRepository, h.OrderCreatedEvent, h.EventDispatcher)
 	output, err := createOrder.Execute(input)
 	if err != nil {
+		log.Printf("Error creating order: %v", err)
 		http.Error(w, "Error creating order: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	log.Println("Order created successfully")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(w).Encode(output)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	w.WriteHeader(http.StatusCreated)
 }

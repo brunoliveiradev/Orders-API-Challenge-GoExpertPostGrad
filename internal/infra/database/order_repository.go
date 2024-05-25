@@ -16,13 +16,13 @@ func NewOrderRepository(db *sql.DB) *OrderRepository {
 func (r *OrderRepository) Save(order *entity.Order) error {
 	// When we use the Prepare method, we need to close the statement after using it
 	// The advantage of using Prepare is that it is possible to reuse the statement and avoid SQL injection
-	stmt, err := r.Db.Prepare("INSERT INTO orders (id, price, tax, final_price) VALUES (?, ?, ?, ?)")
+	stmt, err := r.Db.Prepare("INSERT INTO orders (id, name, price, tax, final_price) VALUES (?, ?, ?, ?, ?)")
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(order.ID, order.Price, order.Tax, order.FinalPrice)
+	_, err = stmt.Exec(order.ID, order.Name, order.Price, order.Tax, order.FinalPrice)
 	if err != nil {
 		return err
 	}

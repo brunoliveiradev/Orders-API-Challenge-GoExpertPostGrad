@@ -19,7 +19,7 @@ func NewOrderService(createOrderUseCase usecase.CreateOrderUseCase) *OrderServic
 
 func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*pb.CreateOrderResponse, error) {
 	input := usecase.OrderInputDTO{
-		ID:    req.Id,
+		Name:  req.Name,
 		Price: float64(req.Price),
 		Tax:   float64(req.Tax),
 	}
@@ -31,6 +31,7 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderReque
 
 	return &pb.CreateOrderResponse{
 		Id:         output.ID,
+		Name:       output.Name,
 		Price:      float32(output.Price),
 		Tax:        float32(output.Tax),
 		FinalPrice: float32(output.FinalPrice),
