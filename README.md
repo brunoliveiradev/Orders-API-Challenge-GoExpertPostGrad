@@ -25,7 +25,7 @@ Software [GoExpert](https://goexpert.fullcycle.com.br/pos-goexpert/).
    cd GoExpertPostGrad-Orders-Challenge
    ```
 
-3. Execute o comando abaixo para iniciar o ambiente de desenvolvimento:
+3. Execute o comando abaixo na pasta raiz do projeto para iniciar o ambiente de desenvolvimento:
    ```sh
    docker compose up --build -d
    ```
@@ -142,7 +142,7 @@ Engineering [GoExpert](https://goexpert.fullcycle.com.br/pos-goexpert/).
    cd GoExpertPostGrad-Orders-Challenge
    ```
 
-3. Use the Makefile to build and start the services. Run the command below to start the development environment:
+3. Use the Makefile to build and start the services. Run the command below to start the development environment in the root folder:
    ```sh
    docker compose up --build -d
    ```
