@@ -2,8 +2,29 @@ package events
 
 import (
 	"errors"
+	"log"
 	"sync"
+	"time"
 )
+
+type EventInterface interface {
+	GetName() string
+	GetDateTime() time.Time
+	GetPayload() interface{}
+	SetPayload(payload interface{})
+}
+
+type EventHandlerInterface interface {
+	Handle(event EventInterface, wg *sync.WaitGroup) error
+}
+
+type EventDispatcherInterface interface {
+	Register(eventName string, handler EventHandlerInterface) error
+	Dispatch(event EventInterface) error
+	Remove(eventName string, handler EventHandlerInterface) error
+	Has(eventName string, handler EventHandlerInterface) bool
+	Clear()
+}
 
 var ErrHandlerAlreadyRegistered = errors.New("handler already registered")
 
@@ -22,7 +43,12 @@ func (ed *EventDispatcher) Dispatch(event EventInterface) error {
 		wg := &sync.WaitGroup{}
 		for _, handler := range handlers {
 			wg.Add(1)
-			go handler.Handle(event, wg)
+			go func(h EventHandlerInterface) {
+				defer wg.Done()
+				if err := h.Handle(event, wg); err != nil {
+					log.Printf("Error handling event %s: %v", event.GetName(), err)
+				}
+			}(handler)
 		}
 		wg.Wait()
 	}
@@ -30,12 +56,8 @@ func (ed *EventDispatcher) Dispatch(event EventInterface) error {
 }
 
 func (ed *EventDispatcher) Register(eventName string, handler EventHandlerInterface) error {
-	if _, ok := ed.handlers[eventName]; ok {
-		for _, h := range ed.handlers[eventName] {
-			if h == handler {
-				return ErrHandlerAlreadyRegistered
-			}
-		}
+	if ed.Has(eventName, handler) {
+		return ErrHandlerAlreadyRegistered
 	}
 	ed.handlers[eventName] = append(ed.handlers[eventName], handler)
 	return nil
@@ -53,10 +75,10 @@ func (ed *EventDispatcher) Has(eventName string, handler EventHandlerInterface) 
 }
 
 func (ed *EventDispatcher) Remove(eventName string, handler EventHandlerInterface) error {
-	if _, ok := ed.handlers[eventName]; ok {
-		for i, h := range ed.handlers[eventName] {
+	if handlers, ok := ed.handlers[eventName]; ok {
+		for i, h := range handlers {
 			if h == handler {
-				ed.handlers[eventName] = append(ed.handlers[eventName][:i], ed.handlers[eventName][i+1:]...)
+				ed.handlers[eventName] = append(handlers[:i], handlers[i+1:]...)
 				return nil
 			}
 		}
