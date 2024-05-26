@@ -5,6 +5,10 @@ import (
 	"GoExpertPostGrad-Orders-Challenge/pkg/events"
 )
 
+type OrderCreatedEventInterface interface {
+	events.EventInterface
+}
+
 type OrderInputDTO struct {
 	Name  string  `json:"name"`
 	Price float64 `json:"price"`
@@ -19,21 +23,21 @@ type OrderOutputDTO struct {
 	FinalPrice float64 `json:"final_price"`
 }
 
-type CreateOrderUseCase struct {
+type OrderCreationUseCase struct {
 	OrderRepository   entity.OrderRepositoryInterface
-	OrderCreatedEvent events.EventInterface
+	OrderCreatedEvent OrderCreatedEventInterface
 	EventDispatcher   events.EventDispatcherInterface
 }
 
-func NewCreateOrderUseCase(orderRepository entity.OrderRepositoryInterface, orderCreatedEvent events.EventInterface, eventDispatcher events.EventDispatcherInterface) *CreateOrderUseCase {
-	return &CreateOrderUseCase{
+func NewOrderCreationUseCase(orderRepository entity.OrderRepositoryInterface, orderCreatedEvent OrderCreatedEventInterface, eventDispatcher events.EventDispatcherInterface) *OrderCreationUseCase {
+	return &OrderCreationUseCase{
 		OrderRepository:   orderRepository,
 		OrderCreatedEvent: orderCreatedEvent,
 		EventDispatcher:   eventDispatcher,
 	}
 }
 
-func (uc *CreateOrderUseCase) Execute(input OrderInputDTO) (OrderOutputDTO, error) {
+func (uc *OrderCreationUseCase) Execute(input OrderInputDTO) (OrderOutputDTO, error) {
 	// Create order
 	order, err := toEntityOrder(input)
 	if err != nil {
@@ -67,7 +71,7 @@ func toEntityOrder(input OrderInputDTO) (*entity.Order, error) {
 	return order, nil
 }
 
-func (uc *CreateOrderUseCase) dispatchOrderCreatedEvent(order *entity.Order) (OrderOutputDTO, error) {
+func (uc *OrderCreationUseCase) dispatchOrderCreatedEvent(order *entity.Order) (OrderOutputDTO, error) {
 	dto := &OrderOutputDTO{
 		ID:         order.ID,
 		Name:       order.Name,
