@@ -8,7 +8,10 @@ import (
 	"GoExpertPostGrad-Orders-Challenge/internal/infra/graphql/graph/model"
 	"GoExpertPostGrad-Orders-Challenge/internal/usecase"
 	"context"
+	"log"
 )
+
+var cacheKey = "orders"
 
 // CreateOrder is the resolver for the createOrder field.
 func (r *mutationResolver) CreateOrder(ctx context.Context, order *model.OrderInput) (*model.Order, error) {
@@ -18,10 +21,13 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, order *model.OrderIn
 		Tax:   order.Tax,
 	}
 
-	output, err := r.CreateOrderUseCase.Execute(dto)
+	output, err := r.OrderCreationUseCase.Execute(dto)
 	if err != nil {
 		return nil, err
 	}
+
+	// Clear cache to ensure consistency
+	r.OrderListingUseCase.Cache.Delete(cacheKey)
 
 	return &model.Order{
 		ID:         output.ID,
@@ -32,7 +38,33 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, order *model.OrderIn
 	}, nil
 }
 
+// Orders is the resolver for the orders field.
+func (r *queryResolver) Orders(ctx context.Context) ([]*model.Order, error) {
+	output, err := r.OrderListingUseCase.Execute()
+	if err != nil {
+		log.Printf("Failed to list orders: %v", err)
+		return nil, err
+	}
+
+	var orders []*model.Order
+	for _, order := range output.Orders {
+		orders = append(orders, &model.Order{
+			ID:         order.ID,
+			Name:       order.Name,
+			Price:      order.Price,
+			Tax:        order.Tax,
+			FinalPrice: order.FinalPrice,
+		})
+	}
+
+	return orders, nil
+}
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
+// Query returns QueryResolver implementation.
+func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
+
 type mutationResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }
