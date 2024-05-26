@@ -5,6 +5,11 @@ import (
 	"database/sql"
 )
 
+const (
+	insertQuery    = "INSERT INTO orders (id, name, price, tax, final_price) VALUES (?, ?, ?, ?, ?)"
+	selectAllQuery = "SELECT id, name, price, tax, final_price FROM orders"
+)
+
 type OrderRepository struct {
 	Db *sql.DB
 }
@@ -16,7 +21,7 @@ func NewOrderRepository(db *sql.DB) *OrderRepository {
 func (r *OrderRepository) Save(order *entity.Order) error {
 	// When we use the Prepare method, we need to close the statement after using it
 	// The advantage of using Prepare is that it is possible to reuse the statement and avoid SQL injection
-	stmt, err := r.Db.Prepare("INSERT INTO orders (id, name, price, tax, final_price) VALUES (?, ?, ?, ?, ?)")
+	stmt, err := r.Db.Prepare(insertQuery)
 	if err != nil {
 		return err
 	}
@@ -29,11 +34,20 @@ func (r *OrderRepository) Save(order *entity.Order) error {
 	return nil
 }
 
-func (r *OrderRepository) GetTotalCount() (int, error) {
-	var count int
-	err := r.Db.QueryRow("SELECT COUNT(*) FROM orders").Scan(&count)
+func (r *OrderRepository) ListAllOrders() ([]*entity.Order, error) {
+	rows, err := r.Db.Query(selectAllQuery)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
-	return count, nil
+	defer rows.Close()
+
+	var orders []*entity.Order
+	for rows.Next() {
+		order := new(entity.Order)
+		if err := rows.Scan(&order.ID, &order.Name, &order.Price, &order.Tax, &order.FinalPrice); err != nil {
+			return nil, err
+		}
+		orders = append(orders, order)
+	}
+	return orders, nil
 }
