@@ -4,6 +4,8 @@ import (
 	"GoExpertPostGrad-Orders-Challenge/internal/infra/grpc/pb"
 	"GoExpertPostGrad-Orders-Challenge/internal/usecase"
 	"context"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var cacheKey = "orders"
@@ -30,7 +32,7 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderReque
 
 	output, err := s.createOrderUseCase.Execute(dto)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "Error creating Order: %v", err)
 	}
 
 	// Clear cache to ensure consistency
@@ -48,7 +50,7 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *pb.CreateOrderReque
 func (s *OrderService) ListOrders(ctx context.Context, req *pb.ListOrdersRequest) (*pb.ListOrdersResponse, error) {
 	output, err := s.listOrdersUseCase.Execute()
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "Error Listing Order: %v", err)
 	}
 
 	var orders []*pb.Order

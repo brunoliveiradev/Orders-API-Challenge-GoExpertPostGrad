@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/streadway/amqp"
 	"log"
-	"sync"
 )
 
 type OrderListingHandler struct {
@@ -17,9 +16,7 @@ func NewOrderListingHandler(rabbitMQService *events.RabbitMQService) *OrderListi
 	return &OrderListingHandler{RabbitMQService: rabbitMQService}
 }
 
-func (h *OrderListingHandler) Handle(event events.EventInterface, wg *sync.WaitGroup) error {
-	defer wg.Done()
-
+func (h *OrderListingHandler) Handle(event events.EventInterface) error {
 	jsonOutput, _ := json.Marshal(event.GetPayload())
 
 	msg := amqp.Publishing{

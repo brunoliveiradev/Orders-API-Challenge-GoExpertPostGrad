@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/streadway/amqp"
 	"log"
-	"sync"
 )
 
 type OrderCreatedHandler struct {
@@ -19,9 +18,7 @@ func NewOrderCreatedHandler(rabbitMQService *events.RabbitMQService, cache cache
 	return &OrderCreatedHandler{RabbitMQService: rabbitMQService, Cache: cache}
 }
 
-func (h *OrderCreatedHandler) Handle(event events.EventInterface, wg *sync.WaitGroup) error {
-	defer wg.Done()
-
+func (h *OrderCreatedHandler) Handle(event events.EventInterface) error {
 	jsonOutput, _ := json.Marshal(event.GetPayload())
 
 	msg := amqp.Publishing{

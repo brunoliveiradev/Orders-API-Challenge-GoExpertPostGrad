@@ -47,7 +47,6 @@ func (uc *OrderListingUseCase) Execute() (OrdersDTO, error) {
 		return OrdersDTO{}, fmt.Errorf("failed to fetch and cache orders: %w", err)
 	}
 
-	log.Printf("Orders fetched and cached successfully: %+v\n", orders)
 	return orders, nil
 }
 
@@ -74,8 +73,7 @@ func (uc *OrderListingUseCase) fetchAndCacheOrders() (OrdersDTO, error) {
 	}
 
 	uc.Cache.Set(cacheKey, dto)
-	log.Println("Orders fetched successfully, duration: ", duration)
-	log.Printf("Orders cached successfully: %+v\n", dto)
+	log.Println("Orders fetched and cached successfully, duration: ", duration)
 	return dto, nil
 }
 

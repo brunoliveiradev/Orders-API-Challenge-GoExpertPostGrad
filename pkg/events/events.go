@@ -15,7 +15,7 @@ type EventInterface interface {
 }
 
 type EventHandlerInterface interface {
-	Handle(event EventInterface, wg *sync.WaitGroup) error
+	Handle(event EventInterface) error
 }
 
 type EventDispatcherInterface interface {
@@ -45,7 +45,7 @@ func (ed *EventDispatcher) Dispatch(event EventInterface) error {
 			wg.Add(1)
 			go func(h EventHandlerInterface) {
 				defer wg.Done()
-				if err := h.Handle(event, wg); err != nil {
+				if err := h.Handle(event); err != nil {
 					log.Printf("Error handling event %s: %v", event.GetName(), err)
 				}
 			}(handler)
