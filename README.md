@@ -65,7 +65,6 @@ Software [GoExpert](https://goexpert.fullcycle.com.br/pos-goexpert/).
 
 1. Abra o arquivo `orders_api.http` no seu editor de texto, se encontra no caminho `api/orders_api.http`.
 
-   <br>
 2. Envie requisições de teste para a API. Por exemplo, usando o VS Code, você pode instalar a
    extensão [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client).
     - Se preferir utilizar o `cURL`, você pode copiar o conteúdo do arquivo `orders_api.http` e colar
@@ -89,7 +88,7 @@ Software [GoExpert](https://goexpert.fullcycle.com.br/pos-goexpert/).
           "tax": 1.5
         }
         ```
-    - Para fazer a request de listagem de pedidos, utilize o método `ListOrders`.
+    - **Para fazer a request de listagem de pedidos, utilize o método** `ListOrders`.
    
     <br>
 4. Para testar o **GraphQL** você pode utilizar a interface do **GraphQL** Playground que está disponível
