@@ -3,20 +3,23 @@
 # curl --location 'http://localhost:8000/order'
 #--header 'Content-Type: application/json'
 #--data '{
-#  "name":"TV 50",
-#  "price": 4990.90,
-#  "tax": 0.5
+#  "name":"FUSCA AZUL",
+#  "price": 101945.90,
+#  "tax": 2.5
 #}
 #'
 POST http://localhost:8000/order
 Content-Type: application/json
 
 {
-  "name": "TV 50",
-  "price": 4990.90,
-  "tax": 0.5
+  "name": "FUSCA AZUL",
+  "price": 101945.90,
+  "tax": 2.5
 }
 
 
-###
+### curl command to test the GetOrder remove the comments before running the cURL command in the terminal or Postman
+# curl --location 'http://localhost:8000/orders'
+GET http://localhost:8000/orders
 
+###
