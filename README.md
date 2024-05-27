@@ -21,8 +21,7 @@ Software [GoExpert](https://goexpert.fullcycle.com.br/pos-goexpert/).
 
 2. Clone o repositório e entre no diretório do projeto.
    ```sh
-   git clone https://github.com/brunoliveiradev/GoExpertPostGrad-Orders-Challenge.git
-   cd GoExpertPostGrad-Orders-Challenge
+   git clone https://github.com/brunoliveiradev/Orders-API-Challenge-GoExpertPostGrad.git
    ```
 
 3. Execute o comando abaixo na pasta raiz do projeto para iniciar o ambiente de desenvolvimento:
@@ -137,8 +136,7 @@ Engineering [GoExpert](https://goexpert.fullcycle.com.br/pos-goexpert/).
 
 2. Clone the repository and navigate to the project directory.
    ```sh
-   git clone https://github.com/brunoliveiradev/GoExpertPostGrad-Orders-Challenge.git
-   cd GoExpertPostGrad-Orders-Challenge
+    git clone https://github.com/brunoliveiradev/Orders-API-Challenge-GoExpertPostGrad.git
    ```
 
 3. Use the Makefile to build and start the services. Run the command below to start the development environment in the root folder:
