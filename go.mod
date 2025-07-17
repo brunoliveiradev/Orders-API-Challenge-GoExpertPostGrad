@@ -10,7 +10,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/spf13/viper v1.18.2
 	github.com/streadway/amqp v1.1.0
-	github.com/vektah/gqlparser/v2 v2.5.11
+	github.com/vektah/gqlparser/v2 v2.5.15
 	google.golang.org/grpc v1.63.2
 	google.golang.org/protobuf v1.33.0
 )
